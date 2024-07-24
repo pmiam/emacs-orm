@@ -6,11 +6,13 @@
 (defclass orm-class ()
   ((table :initarg :table
 	  :type symbol
+	  :accessor orm-table-name
 	  :allocation :class
 	  :documentation
 	  "The relation/table in which instances of this object are saved.")
    (columns :initarg :columns
 	    :type list
+	    :accessor orm-columns
 	    :allocation :class
 	    :documentation
 	    "A list of column specifications."))
@@ -23,17 +25,17 @@
 (cl-defmethod orm-column-names ((class (subclass orm-class)))
   "Get class column names"
   (let* ((obj (make-instance class))
-	 (cols (oref obj columns)))
+	 (cols (orm-columns obj)))
     (mapcar (lambda (x) (slot-value x 'name)) cols)))
 
 (cl-defmethod orm-table-name ((class (subclass orm-class)))
   "Get class table name"
-  (oref (make-instance class) table))
+  (orm-table-name (make-instance class)))
 
 (cl-defmethod orm-table-schema ((class (subclass orm-class)))
   "Get schema for table"
   (let* ((obj (make-instance class))
-	 (cols (oref obj columns)))
+	 (cols (orm-columns obj)))
     (apply 'vector (mapcar 'orm-get-column-schema cols))))
 
 ;; Instance Utils
@@ -67,9 +69,9 @@
 (cl-defmethod orm-insert ((this orm-class))
   "Insert object into database."
   (let ((conn orm-default-conn)
-	(table (oref this table))
+	(table-name (orm-table-name this))
 	(values (orm-object-values this)))
     (emacsql-with-transaction conn
-      (emacsql conn [:insert :into $i1 :values $v2] table values))))
+      (emacsql conn [:insert :into $i1 :values $v2] table-name values))))
 
 (provide 'orm-class)
