@@ -1,0 +1,12 @@
+#+title: ORM
+
+#+begin_src elisp
+(deftable person ()
+	  ((name :initarg :name
+		 :primary-key t
+		 :not-null t)
+	   (age  :initarg :age))
+	  :table people
+	  :documentation
+	  "Person class with correspondence to a table named people")
+#+end_src
