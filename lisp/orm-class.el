@@ -15,7 +15,13 @@
 	    :accessor orm-columns
 	    :allocation :class
 	    :documentation
-	    "A list of column specifications."))
+	    "A list of column specifications.")
+   (associations :initarg :associations
+		 :type list
+		 :accessor orm-associations
+		 :allocation :class
+		 :documentation
+		 "A list of association objects."))
   :documentation
   "This special class enables persistence through a database."
   :abstract t)
