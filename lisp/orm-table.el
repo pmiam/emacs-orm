@@ -1,0 +1,67 @@
+;;; -*- lexical-binding: t -*-
+
+(require 'dash)
+(require 'eieio)
+(require 'emacsql)
+
+(defclass orm-table ()
+  ((table-name :initarg :table
+	       :type symbol
+	       :accessor orm-table-name
+	       :allocation :class
+	       :documentation
+	       "The relation/table in which instances of this object are saved.")
+   (columns :initarg :columns
+	    :type list
+	    :accessor orm-table-columns
+	    :allocation :class
+	    :documentation
+	    "A list of column specifications.")
+   (associations :initarg :associations
+		 :type list
+		 :accessor orm-table-associations
+		 :allocation :class
+		 :documentation
+		 "A list of association objects."))
+  :documentation
+  "This special class enables persistence through a database."
+  :abstract t)
+
+(cl-defmethod orm-table-name ((table (subclass orm-table)))
+  "Get class table name"
+  (orm-table-name (make-instance table)))
+
+(cl-defmethod orm-table-name ((table string))
+  "Get class table name"
+  (intern table))
+
+(cl-defmethod orm-table-primary-key ((table (subclass orm-table)))
+  "Get class column names"
+  (let* ((obj (make-instance table))
+	 (cols (orm-table-columns obj))
+	 (pk-cols (-filter (lambda (x) (oref x primary-key)) cols)))
+    (when-let ((names (mapcar (lambda (x) (oref x name)) pk-cols)))
+      (apply 'vector names))))
+
+(cl-defmethod orm-table-primary-key ((table string))
+  "Get default primary key"
+  [id])
+
+(defun orm-table--column-constraints (cols)
+  "Get column constraints for table"
+  (apply 'vector (mapcar 'orm-column-constraint cols)))
+
+(defun orm-table--table-constraints (cols)
+  "Get column constraints for table"
+  (-filter 'identity (mapcar 'orm-column-table-constraint cols)))
+
+(cl-defmethod orm-table-schema ((table (subclass orm-table)))
+  "Get schema for table which is made up of a vector of column constraints,
+and table constraints"
+  (let* ((table (make-instance table))
+	 (cols (orm-table-columns table))
+	 (col-constraints (orm-table--column-constraints cols))
+	 (table-constraints (orm-table--table-constraints cols)))
+    (cons col-constraints table-constraints)))
+
+(provide 'orm-table)

@@ -1,10 +1,66 @@
 ;;; orm.el --- An object relational mapping for emacs lisp
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(provide 'orm)
+(require 'orm-table)
+(require 'orm-column)
+(require 'orm-assoc)
+(require 'orm-db-connection)
+(require 'orm-macros)
 
-(cl-eval-when (load eval)
-  (require 'orm-class)
-  (require 'orm-column)
-  (require 'orm-db-connection)
-  (require 'orm-macros))
+;; Static Utils
+
+(cl-defmethod orm-column-names ((table orm-table))
+  "Get table column names"
+  (let* ((cols (orm-table-columns table)))
+    (mapcar (lambda (x) (slot-value x 'name)) cols)))
+
+(cl-defmethod orm-column-names ((table (subclass orm-table)))
+  "Get table column names"
+  (orm-column-names (make-instance table)))
+
+;; Static Methods
+
+(cl-defmethod orm-count ((table (subclass orm-table)))
+  "Count rows of class table in database."
+  (let ((conn orm-default-conn)
+	(table (orm-table-name table)))
+    (emacsql conn [:select (funcall count *) :from $i1] table)))
+
+(cl-defmethod orm-create ((table (subclass orm-table)))
+  "Create table for object class in database."
+  (let ((conn orm-default-conn)
+	(table (orm-table-name table))
+	(schema (orm-table-schema table)))
+    (emacsql-with-transaction conn
+      (emacsql conn [:create-table $i1 $S2] table schema))))
+
+;; Instance Utils
+
+(cl-defmethod orm--object-values ((this orm-table))
+  "Get values vector for object"
+  (let* ((class (class-of this))
+	 (column-names (orm-column-names class)))
+    (apply 'vector
+	   (cl-loop for slot in column-names
+		    collect (slot-value this slot)))))
+
+;; Insert
+
+(cl-defmethod orm-insert ((this orm-table))
+  "Insert object into database."
+  (let ((conn orm-default-conn)
+	(table-name (orm-table-name this))
+	(values (orm--object-values this)))
+    (emacsql-with-transaction conn
+      (emacsql conn [:insert :into $i1 :values $v2] table-name values))))
+
+;; (cl-defmethod orm-replace ((this orm-table))
+;;   "Insert object into database."
+;;   (let ((conn orm-default-conn)
+;; 	(table-name (orm-table-name this))
+;; 	(values (orm-object-values this)))
+;;     (emacsql-with-transaction conn
+;;       (emacsql conn [:insert :into $i1 :values $v2] table-name values))))
+
+
+(provide 'orm)
