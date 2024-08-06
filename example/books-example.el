@@ -1,9 +1,13 @@
 (require 'orm-table)
 
+(setq orm-default-db (orm-db :type :sql :file "/home/tassos/desktop/test.db"))
+(setq orm-default-conn (orm-connect orm-default-db))
+
 (deftable author ()
 	  ((name :initarg :name
 		 :primary-key t
-		 :not-null t)))
+		 :not-null t))
+	  :table authors)
 
 (orm-create author)
 (setq ayn-rand (author :name "Ayn Rand"))
@@ -14,8 +18,8 @@
 		  :primary-key t
 		  :not-null t))
 	  :associations
-	  ((:belongs_to author)))
+	  ((:belongs_to author :foreign-key writer)))
 
 (orm-create book)
-(setq fountain-head (book :title "Fountain Head" :author-id "Ayn Rand"))
+(setq fountain-head (book :title "Fountain Head" :writer "Ayn Rand"))
 (orm-insert fountain-head)
