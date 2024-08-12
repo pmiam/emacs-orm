@@ -42,7 +42,9 @@
 	 (column-names (orm-column-names class)))
     (apply 'vector
 	   (cl-loop for slot in column-names
-		    collect (slot-value this slot)))))
+		    collect (if (slot-boundp this slot)
+				(slot-value this slot)
+			      nil)))))
 
 ;; Insert
 
