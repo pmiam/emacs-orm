@@ -1,6 +1,6 @@
 (require 'orm-table)
 
-(setq orm-default-db (orm-db :type :sql :file "/home/tassos/desktop/test.db"))
+(setq orm-default-db (orm-db :type :sql :file "/tmp/test.db"))
 (setq orm-default-conn (orm-connect orm-default-db))
 
 (deftable author ()
