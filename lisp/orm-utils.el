@@ -10,8 +10,8 @@
 
 (defun orm--filter-plist (plist keys)
   (apply '-concat
-	 (cl-loop for x iter-by (orm--by-two plist)
-		  if (member (car x) keys)
-		  collect x)))
+         (cl-loop for x iter-by (orm--by-two plist)
+                  if (member (car x) keys)
+                  collect x)))
 
 (provide 'orm-utils)
