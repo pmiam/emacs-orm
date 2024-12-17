@@ -10,3 +10,16 @@
 	  :documentation
 	  "Person class with correspondence to a table named people")
 #+end_src
+
+* Summary
+
+Provides a way to define EIEIO classes which correspond to tables in a
+database. Instances of the class correspond to records in a table. Slots of the
+class correspond to columns in the table.
+
+* Features
+** Create, Read, Update, Delete (CRUD) Methods
+*** orm-insert
+*** TODO orm-find
+*** TODO orm-update
+*** TODO orm-delete
