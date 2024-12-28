@@ -6,6 +6,7 @@
 (require 'orm-assoc)
 (require 'orm-db-connection)
 (require 'orm-macros)
+(require 's)
 
 ;; Static Utils
 

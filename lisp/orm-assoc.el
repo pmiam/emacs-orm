@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t -*-
 
 (require 'eieio)
+(require 'orm-table)
+(require 'orm-utils)
 
 (defclass orm-assoc ()
   ((type :initarg :type)

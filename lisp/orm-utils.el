@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
+(require 'generator)
 
 (iter-defun orm--by-two (l)
   "Iterate over a list in chunks of two elements"
