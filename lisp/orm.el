@@ -37,7 +37,7 @@
 
 (cl-defmethod orm--object-values ((this orm-table))
   "Get values vector for object"
-  (let* ((class (class-of this))
+  (let* ((class (eieio-object-class this))
 	 (column-names (orm-column-names class)))
     (apply 'vector
 	   (cl-loop for slot in column-names
