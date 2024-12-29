@@ -1,5 +1,4 @@
-;;; orm.el --- An object relational mapping for emacs lisp
-;; -*- coding: utf-8; lexical-binding: t; -*-
+;;; orm.el --- emacs lisp object relational mapping -*- lexical-binding: t; -*-
 
 (require 'orm-table)
 (require 'orm-column)

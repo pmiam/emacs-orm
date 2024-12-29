@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t -*-
+
 (require 'orm-column)
 (require 'orm-table)
 (require 'orm-assoc)
