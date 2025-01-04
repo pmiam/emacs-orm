@@ -13,6 +13,9 @@
 (setq ayn-rand (author :name "Ayn Rand"))
 (orm-insert ayn-rand)
 
+(setq franz-kafka (author :name "Franz Kafka"))
+(orm-insert franz-kafka)
+
 (deftable book ()
           ((title :initarg :title
                   :primary-key t
@@ -23,3 +26,8 @@
 (orm-create book)
 (setq fountain-head (book :title "Fountain Head" :writer "Ayn Rand"))
 (orm-insert fountain-head)
+
+;; Read
+
+(orm-all author)
+(orm-first author)

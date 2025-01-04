@@ -1,5 +1,9 @@
 #+title: ORM
 
+Define EIEIO classes that correspond to tables in a database. Class
+instances correspond to records in a table. Class slots correspond to
+table columns.
+
 #+begin_src elisp
 (deftable person ()
 	  ((name :initarg :name
@@ -19,3 +23,9 @@
   :ensure nil)
 #+end_src
 
+* Features
+** Create, Read, Update, Delete (CRUD) Methods
+*** orm-insert
+*** TODO orm-find
+*** TODO orm-update
+*** TODO orm-delete
